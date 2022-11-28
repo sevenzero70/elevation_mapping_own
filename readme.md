@@ -114,7 +114,6 @@ D435i/L515
 D415/D435
 
 > $ roslaunch rtabmap_ros rtabmap.launch rviz:=true rtabmapviz:=false\
-
     rtabmap_args:="--delete_db_on_start" \
     depth_topic:=/camera/aligned_depth_to_color/image_raw \
     rgb_topic:=/camera/color/image_raw \
@@ -124,7 +123,6 @@ D415/D435
 D435i
 
 > $roslaunch rtabmap_ros rtabmap.launch rviz:=true rtabmapviz:=false\
-
     rtabmap_args:="--delete_db_on_start --Optimizer/GravitySigma 0.3" \
     depth_topic:=/camera/aligned_depth_to_color/image_raw \
     rgb_topic:=/camera/color/image_raw \
