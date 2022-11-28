@@ -1,0 +1,13 @@
+# 这里订阅/points话题，但是realsense应该没有这个话题
+point_cloud_topic: "/points"
+# 世界坐标系
+map_frame_id: "map"
+# 车体坐标系
+robot_base_frame_id: "base"
+robot_pose_with_covariance_topic: "/pose"
+robot_pose_cache_size: 200
+# 2.5D地图中心坐标系
+track_point_frame_id: "base"
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0

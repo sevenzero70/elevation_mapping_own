@@ -1,0 +1,33 @@
+<launch>
+  <!-- Elevation mapping node -->
+  <!-- 启动ros节点"elevation_mapping"，节点类型：elevation_mapping，节点所属包：elevation_mapping -->
+  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping"  output="screen">
+    <!-- 从yaml文件中导入参数 -->
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/robots/simple_demo_robot.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/elevation_maps/simple_demo_map.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
+  </node>
+
+  <!-- Publish some points -->
+  <!-- 启动ros节点：read_ply，节点类型：read，节点所属包：point_cloud_io -->>
+  <!-- 根据参数“file_path”读入maze.ply文件 -->>
+  <!-- 参数：话题-/points；结构-map；频率1.0HZ -->>
+  <node pkg="point_cloud_io" type="read" name="read_ply" output="screen">
+    <param name="file_path" value="$(find elevation_mapping_demos)/sample_data/maze.ply" />
+    <param name="topic" value="/points" />
+    <param name="frame" value="map" />
+    <param name="rate" value="1.0" />
+  </node>
+
+  <!-- Setup a transform between the world and the robot -->
+  <!-- 设置/map坐标系到/base坐标系之间的坐标转换 -->>
+  <node pkg="tf" type="static_transform_publisher" name="world_to_robot" args="2.0 6.0 0 0 0.0 0 /map /base 100"/>
+
+  <!-- Launch visualizations for the resulting elevation map -->
+  <!-- 可视化相关文件 -->>
+  <include file="$(find elevation_mapping_demos)/launch/visualization.launch" />
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping_demos)/rviz/elevation_map_visualization.rviz" />
+
+</launch>

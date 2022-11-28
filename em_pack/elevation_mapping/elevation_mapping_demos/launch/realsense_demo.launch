@@ -1,0 +1,37 @@
+<launch>
+
+  <!-- Elevation mapping node -->
+
+  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/robots/simple_demo_robot.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/elevation_maps/remove_object.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
+  </node>
+
+  <node pkg= "odom_to_pose" type="odom_to_pose" name="odom_to_pose" output="screen"/>
+
+   <!-- 把相机的frame_id和小车的frame_id连接起来，即把cameral_ink加到tf树里面 -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_camera_link" args="0 0 0 0 0.0 0 base camera_link"/>
+  
+  <!-- Launch visualizations for the resulting elevation map -->
+  <include file="$(find elevation_mapping_demos)/launch/visualization.launch" />
+ 
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping_demos)/rviz/elevation_map_visualization_pointcloud.rviz" />
+
+  <!-- Run a passthrough filter to down-sample the sensor point cloud.-->
+  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
+    <remap from="~input" to="/camera/depth/points"/>
+    <remap from="~output" to="/camera/depth/points_downsampled"/>
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0.01
+      filter_limit_max: 6.0  <!-- Limit the range of points to forward to 6 meters in viewing direction-->
+      filter_limit_negative: False
+      leaf_size: 0.05  <!-- Limit the density to 5 cm-->
+    </rosparam>
+  </node>
+
+</launch>

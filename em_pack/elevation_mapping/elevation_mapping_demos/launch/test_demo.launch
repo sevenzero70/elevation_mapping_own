@@ -1,0 +1,26 @@
+<launch>
+
+  <!-- Elevation mapping node -->
+  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/robots/test_demo.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/elevation_maps/test_demo.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/velodyne_HDL-32E.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/postprocessing/postprocessor_pipeline.yaml" />
+  </node>
+
+
+  <!-- tf2_ros node -->
+  <!-- Setup a transform between the lidar and the robot -->
+  <!-- 把激光雷达的frame_id和小车的frame_id连接起来，即把velodyne加到tf树里面 -->
+  <!-- 由于base_link（小车）和map之间已经有tf关系了，所以velodyne（激光雷达）和base_link相连后也会和map有tf关系-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_rslidar" args="0 0 0 0 0.0 0 base_link velodyne"/>
+
+
+  <!-- Launch visualizations for the resulting elevation map -->
+  <!--include file="$(find elevation_mapping_demos)/launch/visualization.launch" /-->
+
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping_demos)/rviz/test_demo.rviz" />
+
+</launch>

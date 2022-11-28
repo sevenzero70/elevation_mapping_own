@@ -1,0 +1,26 @@
+input_sources:
+  ground_truth_cloud: # A name to identify the input source
+    type: pointcloud # Supported types: pointcloud
+    # topic: /points
+    topic: /camera/depth/color/points
+    queue_size: 1
+    publish_on_update: true # Whether to publish the elevation map after a callback from this source.
+    sensor_processor:
+      type: perfect
+      ignore_points_above: .inf
+      ignore_points_below: -.inf
+      cutoff_min_depth: 0.1
+      cutoff_max_depth: 1.5
+      
+
+# 世界坐标系id
+map_frame_id: "map"
+# 车体坐标系id
+robot_base_frame_id: "base"
+robot_pose_with_covariance_topic: "" # Leaving this empty skipps pose covariance updates.
+robot_pose_cache_size: 200
+# 2.5D地图中心坐标系（设置为与车体坐标系一致）
+track_point_frame_id: "base"
+track_point_x: 0.0
+track_point_y: 0.0
+track_point_z: 0.0
